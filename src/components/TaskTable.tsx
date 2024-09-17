@@ -5,18 +5,18 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
+import { Task } from "../types/task";
+import EditTask from "./EditTask";
+import DeleteTask from "./DeleteTask";
+import { Stack } from "@mui/material";
 
-function createData(name: string, dueDate: string, status: string) {
-  return { name, dueDate, status };
-}
-
-const rows = [
-  createData("task1", "2024-01-01", "NOT_STATED"),
-  createData("task2", "2024-01-02", "IN_PROGRESS"),
-  createData("task3", "2024-01-03", "COMPLATED"),
-];
-
-export default function TaskTable() {
+export default function TaskTable({
+  tasks,
+  userId,
+}: {
+  tasks: Task[] | undefined;
+  userId: number;
+}) {
   return (
     <TableContainer component={Paper} sx={{ width: "80%", m: "auto" }}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -29,17 +29,22 @@ export default function TaskTable() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
+          {tasks?.map((task) => (
             <TableRow
-              key={row.name}
+              key={task.id}
               sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
             >
               <TableCell component="th" scope="row">
-                {row.name}
+                {task.name}
               </TableCell>
-              <TableCell align="right">{row.dueDate}</TableCell>
-              <TableCell align="right">{row.status}</TableCell>
-              <TableCell align="right"></TableCell>
+              <TableCell align="right">{task.dueDate}</TableCell>
+              <TableCell align="right">{task.status}</TableCell>
+              <TableCell align="right">
+                <Stack spacing={2} direction="row" justifyContent="flex-end">
+                  <EditTask task={task} userId={userId} />
+                  <DeleteTask id={task.id} userId={userId} />
+                </Stack>
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
